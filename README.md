@@ -1,10 +1,16 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Front-end challenge to Onsing TV
 
-## Available Scripts
+## Install dependences
+```
+yarn install
+```
 
-In the project directory, you can run:
+## Start project
+```
+yarn start
+```
 
-### `yarn start`
+You can also use node package manager (npm)
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.

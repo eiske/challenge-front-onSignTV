@@ -6,6 +6,7 @@ export default class App extends Component {
     lat: "",
     lng: "",
     city: "",
+    formattedAddress: '',
     temperature: "",
     imperial: false,
     geoKey: "AIzaSyAg6rz9WIBVRKGEo-Zqx9tjDxSTF4Yk6rs",
@@ -24,10 +25,12 @@ export default class App extends Component {
 
       const latitude = response.results[0].geometry.location.lat.toFixed(3);
       const longitude = response.results[0].geometry.location.lng.toFixed(3);
+      const address = response.results[0].address_components[0].long_name;
 
       this.setState({
         lat: latitude,
-        lng: longitude
+        lng: longitude,
+        formattedAddress: address
       });
 
       this.fetchTemperature();
@@ -138,13 +141,12 @@ export default class App extends Component {
   }
 
   renderTemperature() {
-    const { lat, lng, city, temperature } = this.state;
+    const { lat, lng, temperature, formattedAddress } = this.state;
     return (
       <div className="text-center">
         <div className="dropdown-divider" />
         <h4 className="mt-3">
-          Temperature at {lat}, {lng}
-          <span className="text-capitalize"> ({city})</span> is {temperature}
+          Temperature at {lat}, {lng} ({formattedAddress}) is {temperature}
         </h4>
       </div>
     );

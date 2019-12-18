@@ -18,11 +18,12 @@ export const getGeocode = async (geoKey, city) => {
   }
 };
 
-export const getTemperature = async (lat, lng, weatherKey) => {
+export const getTemperature = async (lat, lng, weatherKey, imperial) => {
+  const units = imperial ? "imperial" : "metric";
   try {
     const response = await axios({
       method: "get",
-      url: `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&mode=json&appid=${weatherKey}`
+      url: `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=${units}&mode=json&appid=${weatherKey}`
     });
 
     const { data } = response;

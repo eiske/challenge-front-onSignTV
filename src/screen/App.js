@@ -7,6 +7,7 @@ export default class App extends Component {
     lng: "",
     city: "",
     temperature: "",
+    imperial: false,
     geoKey: "AIzaSyAg6rz9WIBVRKGEo-Zqx9tjDxSTF4Yk6rs",
     weatherKey: "b78eb13035123aa706e7715ef9d79f6c"
   };
@@ -42,13 +43,14 @@ export default class App extends Component {
    * then set the temperature caught from response
    */
   fetchTemperature = async () => {
-    const { lat, lng, weatherKey } = this.state;
+    const { lat, lng, weatherKey, imperial } = this.state;
 
     try {
-      const response = await getTemperature(lat, lng, weatherKey);
+      const response = await getTemperature(lat, lng, weatherKey, imperial);
+      const units = imperial ? "°F" : "°C";
 
       if (response.cod === 200) {
-        const temp = `${parseInt(response.main.temp)} °C`;
+        const temp = `${parseInt(response.main.temp)} ${units}`;
         this.setState({ temperature: temp });
       } else {
         alert("There is an error with your APR request");
@@ -74,26 +76,40 @@ export default class App extends Component {
   };
 
   renderForm() {
-    const { lat, lng, city } = this.state;
+    const { lat, lng, city, imperial } = this.state;
     return (
       <form onSubmit={event => this.handleSubmit(event)}>
-        <div className="form-row">
-          <label for="city" className="col-sm-1 col-form-label">
-            City
-          </label>
-          <div className="col-sm-11">
-            <input
-              type="text"
-              value={city}
-              onChange={event => this.handleChange(event)}
-              class="form-control"
-              id="city"
-            />
+        <div className="form-col">
+          <div
+            className="form-row ml-1 mr-1"
+            style={{ justifyContent: "space-between" }}
+          >
+            <label for="city" className="form-label">
+              City
+            </label>
+            <div class="custom-control custom-switch">
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                id="imperial"
+                value={imperial}
+                onChange={() => this.toggleImperialMode()}
+              />
+              <label class="custom-control-label" for="imperial">
+                Imperial mode
+              </label>
+            </div>
           </div>
+          <input
+            type="text"
+            value={city}
+            onChange={event => this.handleChange(event)}
+            class="form-control "
+            id="city"
+          />
         </div>
-        <div className="form-row">
+        <div className="form-row mt-3">
           <div className="form-group col-md-6">
-            <label for="latitude">Latitude</label>
             <input
               type="text"
               value={lat}
@@ -101,9 +117,9 @@ export default class App extends Component {
               id="latidude"
               disabled
             />
+            <small class="form-text text-muted">Latitude</small>
           </div>
           <div className="form-group col-md-6">
-            <label for="longitude">Longitude</label>
             <input
               type="text"
               value={lng}
@@ -111,6 +127,7 @@ export default class App extends Component {
               id="longitude"
               disabled
             />
+            <small class="form-text text-muted">Longitude</small>
           </div>
         </div>
         <button type="submit" className="btn btn-outline-primary">
@@ -133,12 +150,19 @@ export default class App extends Component {
     );
   }
 
+  toggleImperialMode() {
+    const { imperial } = this.state;
+
+    this.setState({ imperial: !imperial });
+  }
+
   render() {
     const { temperature } = this.state;
     return (
       <div>
         <nav className="navbar navbar-expand-lg navbar-light bg-dark text-light">
           <h3>OnSign TV Temperature App</h3>
+          <div class="custom-control custom-switch"></div>
         </nav>
         <div className="container align-item-center mt-5 w-50">
           <div className="card">
@@ -150,6 +174,7 @@ export default class App extends Component {
                 </span>
               </h5>
             </div>
+
             <div className="card-body container">
               {this.renderForm()}
               {temperature !== "" ? this.renderTemperature() : null}
